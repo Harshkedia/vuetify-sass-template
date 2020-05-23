@@ -4,7 +4,7 @@
     <p>{{ programSQF }} SF</p>
     <v-slider v-model="programCost" :max="100" :min="1" hide-details>
       <template v-slot:append>
-        <p>{{ programCost }}</p>
+        <p>${{ programCost }}</p>
       </template>
     </v-slider>
 

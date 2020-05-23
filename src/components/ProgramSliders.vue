@@ -29,7 +29,7 @@ export default {
 <style scoped>
 .program-grid {
   display: grid;
-  gap: 1rem;
+  gap: 0.5rem;
   grid-template-columns: 1fr 1fr 1fr;
 }
 
