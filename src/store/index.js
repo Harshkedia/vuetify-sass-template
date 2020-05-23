@@ -7,6 +7,8 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     totalCost: 10000,
+    totalOccupancyCost: 1000,
+    occupancyCost: 10,
     programs: [
       { name: "Infusion", units: 1, gsf: 100, sqft: 100, cost: 10, totalCost: 1000 },
       { name: "Physician Services", units: 1, gsf: 100, sqft: 100, cost: 10, totalCost: 1000 },
@@ -28,6 +30,10 @@ export default new Vuex.Store({
       state.totalCost = state.programs.reduce((acc, program) => {
         return acc + program.totalCost;
       }, 0);
+      const totalSqft = state.programs.reduce((acc, program) => {
+        return acc + program.sqft;
+      }, 0);
+      state.totalOccupancyCost = totalSqft * state.occupancyCost * 15;
     },
     setProgramGSF(state, payload) {
       state.programs.forEach(program => {
@@ -40,6 +46,10 @@ export default new Vuex.Store({
       state.totalCost = state.programs.reduce((acc, program) => {
         return acc + program.totalCost;
       }, 0);
+      const totalSqft = state.programs.reduce((acc, program) => {
+        return acc + program.sqft;
+      }, 0);
+      state.totalOccupancyCost = totalSqft * state.occupancyCost * 15;
     },
     setProgramCost(state, payload) {
       state.programs.forEach(program => {
@@ -51,6 +61,17 @@ export default new Vuex.Store({
       state.totalCost = state.programs.reduce((acc, program) => {
         return acc + program.totalCost;
       }, 0);
+      const totalSqft = state.programs.reduce((acc, program) => {
+        return acc + program.sqft;
+      }, 0);
+      state.totalOccupancyCost = totalSqft * state.occupancyCost * 15;
+    },
+    setOccupancyCost(state, payload) {
+      state.occupancyCost = payload;
+      const totalSqft = state.programs.reduce((acc, program) => {
+        return acc + program.sqft;
+      }, 0);
+      state.totalOccupancyCost = totalSqft * state.occupancyCost * 15;
     }
   },
   actions: {},
@@ -61,6 +82,12 @@ export default new Vuex.Store({
     },
     totalCost(state) {
       return state.totalCost;
+    },
+    occupancyCost(state) {
+      return state.occupancyCost;
+    },
+    totalOccupancyCost(state) {
+      return state.totalOccupancyCost;
     }
   }
 });

@@ -5,7 +5,7 @@
         <div class="left-row">
           <program-sliders :program-names="programNames" />
           <cost-sliders :program-names="programNames" />
-          <p class="total">Total Construction Cost: ${{ totalCost }}</p>
+          <total-costs />
         </div>
         <div class="right-row">
           <cost-chart />
@@ -20,6 +20,7 @@ import store from "./store";
 import ProgramSliders from "./components/ProgramSliders.vue";
 import CostSliders from "./components/CostSliders.vue";
 import CostChart from "./components/CostChart.vue";
+import TotalCosts from "./components/TotalCosts.vue";
 
 export default {
   name: "App",
@@ -27,7 +28,8 @@ export default {
   components: {
     ProgramSliders,
     CostSliders,
-    CostChart
+    CostChart,
+    TotalCosts
   },
 
   data: () => ({}),
@@ -69,12 +71,5 @@ export default {
   display: grid;
   gap: 1rem;
   grid-template-columns: 1fr;
-}
-
-.total {
-  margin: 10px;
-  padding: 10px;
-  font-size: 20px;
-  background-color: cadetblue;
 }
 </style>

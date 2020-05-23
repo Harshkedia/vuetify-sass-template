@@ -18,13 +18,14 @@ export default {
       }
     },
     lifeCycleCost() {
-      const arr = [this.totalCost];
-      for (let i = 0; i < 14; i += 1) {
-        if (i < 3) {
-          arr.push(this.totalCost + 5000);
-        } else {
-          arr.push(this.totalCost + 10000);
-        }
+      const arr = [];
+      for (let i = 0; i < 3; i += 1) {
+        arr.push(this.totalCost / 3);
+      }
+      arr.reverse();
+      for (let i = 2; i < 14; i += 1) {
+        const prevVal = arr[i];
+        arr.push(prevVal + 1000);
       }
       return arr;
     },
@@ -43,8 +44,8 @@ export default {
           datasets: [
             {
               label: "Option A",
-              backgroundColor: "red",
-              borderColor: "red",
+              backgroundColor: "brown",
+              borderColor: "brown",
               data: this.lifeCycleCost,
               fill: false
             }
@@ -85,6 +86,11 @@ export default {
           }
         }
       };
+    }
+  },
+  watch: {
+    totalCost() {
+      this.updateCanvas();
     }
   },
   mounted() {
