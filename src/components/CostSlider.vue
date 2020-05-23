@@ -1,0 +1,79 @@
+<template>
+  <v-container class="cost-grid">
+    <p class="label">{{ program }}</p>
+    <p>{{ programSQF }} SF</p>
+    <v-slider v-model="programCost" :max="100" :min="1" hide-details>
+      <template v-slot:append>
+        <p>{{ programCost }}</p>
+      </template>
+    </v-slider>
+
+    <p>${{ programTotalCost }}</p>
+  </v-container>
+</template>
+
+<script>
+import store from "../store";
+
+export default {
+  name: "CostSlider",
+  props: {
+    program: {
+      type: String,
+      default: "Program Name"
+    },
+    squareFeet: {
+      type: Number,
+      default: 1000
+    }
+  },
+  data: () => {
+    return {
+      cost: 0
+    };
+  },
+  computed: {
+    programSQF: {
+      get() {
+        const result = store.getters.programs.filter(program => program.name === this.program);
+        return result[0].sqft;
+      },
+      set(val) {
+        store.commit("setProgramGSF", { name: this.program, val });
+      }
+    },
+    programCost: {
+      get() {
+        const result = store.getters.programs.filter(program => program.name === this.program);
+        return result[0].cost;
+      },
+      set(val) {
+        store.commit("setProgramCost", { name: this.program, val });
+      }
+    },
+    programTotalCost: {
+      get() {
+        const result = store.getters.programs.filter(program => program.name === this.program);
+        return result[0].totalCost;
+      }
+    }
+  }
+};
+</script>
+
+<style scoped>
+p {
+  font-size: 15px;
+  padding: 5px;
+}
+
+.label {
+  background-color: brown;
+}
+
+.cost-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr 0.5fr 1fr 1fr;
+}
+</style>

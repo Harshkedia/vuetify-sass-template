@@ -1,28 +1,52 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <v-app>
+    <v-content class="app-grid">
+      <div class="left-row">
+        <program-sliders :program-names="programNames" />
+        <cost-sliders :program-names="programNames" />
+      </div>
+      <div class="right-row" />
+    </v-content>
+  </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import store from "./store";
+import ProgramSliders from "./components/ProgramSliders.vue";
+import CostSliders from "./components/CostSliders.vue";
 
 export default {
-  name: 'App',
+  name: "App",
+
   components: {
-    HelloWorld
+    ProgramSliders,
+    CostSliders
+  },
+
+  data: () => ({}),
+
+  computed: {
+    programNames: {
+      get() {
+        return store.getters.programs.map(program => {
+          return program.name;
+        });
+      }
+    }
   }
-}
+};
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+<style scoped>
+.app-grid {
+  display: grid;
+  gap: 10rem;
+  grid-template-columns: 1fr 1fr;
+}
+
+.left-row {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
 }
 </style>
