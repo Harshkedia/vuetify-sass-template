@@ -33,7 +33,7 @@ export default new Vuex.Store({
       const totalSqft = state.programs.reduce((acc, program) => {
         return acc + program.sqft;
       }, 0);
-      state.totalOccupancyCost = totalSqft * state.occupancyCost * 15;
+      state.totalOccupancyCost = totalSqft * state.occupancyCost;
     },
     setProgramGSF(state, payload) {
       state.programs.forEach(program => {
@@ -49,7 +49,7 @@ export default new Vuex.Store({
       const totalSqft = state.programs.reduce((acc, program) => {
         return acc + program.sqft;
       }, 0);
-      state.totalOccupancyCost = totalSqft * state.occupancyCost * 15;
+      state.totalOccupancyCost = totalSqft * state.occupancyCost;
     },
     setProgramCost(state, payload) {
       state.programs.forEach(program => {
@@ -64,7 +64,7 @@ export default new Vuex.Store({
       const totalSqft = state.programs.reduce((acc, program) => {
         return acc + program.sqft;
       }, 0);
-      state.totalOccupancyCost = totalSqft * state.occupancyCost * 15;
+      state.totalOccupancyCost = totalSqft * state.occupancyCost;
     },
     setOccupancyCost(state, payload) {
       state.occupancyCost = payload;

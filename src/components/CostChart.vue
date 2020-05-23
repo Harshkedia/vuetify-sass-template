@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 <template>
   <div>
     <canvas ref="chart" />
@@ -11,10 +12,20 @@ import store from "../store";
 export default {
   name: "CostChart",
   props: {},
+  data() {
+    return {
+      chart: null
+    };
+  },
   computed: {
     totalCost: {
       get() {
         return store.getters.totalCost;
+      }
+    },
+    totalOccupancyCost: {
+      get() {
+        return store.getters.totalOccupancyCost;
       }
     },
     lifeCycleCost() {
@@ -25,7 +36,7 @@ export default {
       arr.reverse();
       for (let i = 2; i < 14; i += 1) {
         const prevVal = arr[i];
-        arr.push(prevVal + 1000);
+        arr.push(prevVal + this.totalOccupancyCost);
       }
       return arr;
     },
@@ -90,7 +101,18 @@ export default {
   },
   watch: {
     totalCost() {
-      this.updateCanvas();
+      this.chart.data.datasets.forEach(dataset => {
+        // eslint-disable-next-line no-param-reassign
+        dataset.data = this.lifeCycleCost;
+      });
+      this.chart.update();
+    },
+    totalOccupancyCost() {
+      this.chart.data.datasets.forEach(dataset => {
+        // eslint-disable-next-line no-param-reassign
+        dataset.data = this.lifeCycleCost;
+      });
+      this.chart.update();
     }
   },
   mounted() {
@@ -99,7 +121,8 @@ export default {
   methods: {
     updateCanvas() {
       const ctx = this.$refs.chart.getContext("2d");
-      window.myLine = new Chart(ctx, this.config);
+      this.chart = new Chart(ctx, this.config);
+      window.myLine = this.chart;
     }
   }
 };
