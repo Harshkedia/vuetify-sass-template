@@ -9,6 +9,7 @@
         </div>
         <div class="right-row">
           <cost-chart />
+          <model-viewer />
         </div>
       </div>
     </v-content>
@@ -21,6 +22,7 @@ import ProgramSliders from "./components/ProgramSliders.vue";
 import CostSliders from "./components/CostSliders.vue";
 import CostChart from "./components/CostChart.vue";
 import TotalCosts from "./components/TotalCosts.vue";
+import ModelViewer from "./components/ModelViewer.vue";
 
 export default {
   name: "App",
@@ -29,7 +31,8 @@ export default {
     ProgramSliders,
     CostSliders,
     CostChart,
-    TotalCosts
+    TotalCosts,
+    ModelViewer
   },
 
   data: () => ({}),

@@ -8,6 +8,7 @@ export default new Vuex.Store({
   state: {
     totalCost: 10000,
     totalOccupancyCost: 1000,
+    totalSqft: 10000,
     occupancyCost: 10,
     programs: [
       { name: "Infusion", units: 1, gsf: 100, sqft: 100, cost: 10, totalCost: 1000 },
@@ -30,10 +31,10 @@ export default new Vuex.Store({
       state.totalCost = state.programs.reduce((acc, program) => {
         return acc + program.totalCost;
       }, 0);
-      const totalSqft = state.programs.reduce((acc, program) => {
+      state.totalSqft = state.programs.reduce((acc, program) => {
         return acc + program.sqft;
       }, 0);
-      state.totalOccupancyCost = totalSqft * state.occupancyCost;
+      state.totalOccupancyCost = state.totalSqft * state.occupancyCost;
     },
     setProgramGSF(state, payload) {
       state.programs.forEach(program => {
@@ -46,10 +47,10 @@ export default new Vuex.Store({
       state.totalCost = state.programs.reduce((acc, program) => {
         return acc + program.totalCost;
       }, 0);
-      const totalSqft = state.programs.reduce((acc, program) => {
+      state.totalSqft = state.programs.reduce((acc, program) => {
         return acc + program.sqft;
       }, 0);
-      state.totalOccupancyCost = totalSqft * state.occupancyCost;
+      state.totalOccupancyCost = state.totalSqft * state.occupancyCost;
     },
     setProgramCost(state, payload) {
       state.programs.forEach(program => {
@@ -61,17 +62,17 @@ export default new Vuex.Store({
       state.totalCost = state.programs.reduce((acc, program) => {
         return acc + program.totalCost;
       }, 0);
-      const totalSqft = state.programs.reduce((acc, program) => {
+      state.totalSqft = state.programs.reduce((acc, program) => {
         return acc + program.sqft;
       }, 0);
-      state.totalOccupancyCost = totalSqft * state.occupancyCost;
+      state.totalOccupancyCost = state.totalSqft * state.occupancyCost;
     },
     setOccupancyCost(state, payload) {
       state.occupancyCost = payload;
-      const totalSqft = state.programs.reduce((acc, program) => {
+      state.totalSqft = state.programs.reduce((acc, program) => {
         return acc + program.sqft;
       }, 0);
-      state.totalOccupancyCost = totalSqft * state.occupancyCost * 15;
+      state.totalOccupancyCost = state.totalSqft * state.occupancyCost * 15;
     }
   },
   actions: {},
@@ -88,6 +89,9 @@ export default new Vuex.Store({
     },
     totalOccupancyCost(state) {
       return state.totalOccupancyCost;
+    },
+    totalSqft(state) {
+      return state.totalSqft;
     }
   }
 });
