@@ -8,7 +8,7 @@ export default new Vuex.Store({
   state: {
     totalCost: 10000,
     totalOccupancyCost: 1000,
-    totalSqft: 10000,
+    totalSqft: 500,
     occupancyCost: 10,
     programs: [
       { name: "Infusion", units: 1, gsf: 100, sqft: 100, cost: 10, totalCost: 1000 },
