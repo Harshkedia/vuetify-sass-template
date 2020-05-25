@@ -1,10 +1,5 @@
 <template>
   <div ref="modelContainer" class="container">
-    <v-slider v-model="stories" label="Floors" :max="30" :min="6" hide-details>
-      <template v-slot:append>
-        <p>{{ stories }}</p>
-      </template>
-    </v-slider>
     <canvas ref="viewer" />
   </div>
 </template>
@@ -35,9 +30,10 @@ export default {
       teapotSize: 400,
       ambientLight: null,
       light: null,
-      stories: 1,
-      boundingBox: null,
-      boundingBoxEdges: null
+      boxLocations: [],
+      boxPositions: [],
+      boxes: [],
+      boxEdges: []
     };
   },
   computed: {
@@ -51,9 +47,6 @@ export default {
     },
     totalSqft() {
       return store.getters.totalSqft;
-    },
-    baseArea() {
-      return this.totalSqft / this.stories;
     },
     baseDim() {
       return Math.sqrt(this.baseArea);
@@ -89,27 +82,12 @@ export default {
       this.scene.add(this.light);
 
       window.addEventListener("resize", this.onWindowResize, false);
-
-      const geometry = new THREE.BoxGeometry(this.baseDim, this.stories * 10, this.baseDim);
-      const material = new THREE.MeshBasicMaterial({
-        color: 0x00ff00,
-        transparent: true,
-        opacity: 0.1
-      });
-      this.boundingBox = new THREE.Mesh(geometry, material);
-      this.boundingBox.translateY(this.stories / 2);
-      // this.scene.add(this.boundingBox);
-
-      const edgeGeometry = new THREE.EdgesGeometry(geometry);
-      const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
-      this.boundingBoxEdges = new THREE.LineSegments(edgeGeometry, edgeMaterial);
-      // this.scene.add(this.boundingBoxEdges);
-      this.computeProgramGeometry();
+      this.drawProgramGeometry();
     },
     animate() {
       requestAnimationFrame(this.animate);
       this.renderer.render(this.scene, this.camera);
-      this.redrawBoundingBox();
+      // this.redrawBoundingBox();
     },
     redrawBoundingBox() {
       const { geometry } = this.boundingBox;
@@ -124,41 +102,59 @@ export default {
       this.boundingBoxEdges.geometry = newEdgeGeometry;
     },
     computeProgramGeometry() {
-      let totalStories = 0;
-      let prevLeftOverArea = 0;
+      const boxInfos = [];
+      this.programs.forEach((program, index) => {
+        const numUnits = program.units;
+        const unitGSF = program.gsf;
+        const unitDim = unitGSF / this.baseDim;
+        const level = index;
+        const boxLocations = [];
+        const boxPositions = [];
 
-      this.programs.forEach(program => {
-        const material = new THREE.MeshBasicMaterial({ color: this.getRandomColor() });
-        const stories = program.sqft / this.baseArea;
-        const leftoverArea = (stories % 1) * this.baseDim;
-        const boxes = [];
-        let lastLoc;
+        let curUnitLoc = 0;
+        for (let i = 0; i < numUnits; i += 1) {
+          const boxLocation = { x: unitDim, y: 10, z: this.baseDim };
+          const boxPosition = { x: curUnitLoc, y: level * 10, z: 0 };
 
-        for (let i = 0; i < stories; i += 1) {
-          let curBaseArea;
-          if (this.almostEquals(prevLeftOverArea, 0)) {
-            curBaseArea = this.baseDim * this.baseDim;
-            prevLeftOverArea = 0;
-          }
-          const boxGeometry = new THREE.BoxGeometry(Math.sqrt(curBaseArea), 10, this.baseDim);
-          console.log(program.name, totalStories + i);
-          const boxMesh = new THREE.Mesh(boxGeometry, material);
-          boxMesh.position.set(0, (totalStories + i) * 10, 0);
-          this.scene.add(boxMesh);
-          boxes.push(boxMesh);
-          lastLoc = i;
+          curUnitLoc += unitDim;
+          boxLocations.push(boxLocation);
+          boxPositions.push(boxPosition);
         }
+        boxInfos.push({ locations: boxLocations, positions: boxPositions });
+      });
+      return boxInfos;
+    },
+    drawProgramGeometry() {
+      const boxInfo = this.computeProgramGeometry();
+      boxInfo.forEach(info => {
+        const material = new THREE.MeshBasicMaterial({ color: this.getRandomColor() });
+        const { locations, positions } = info;
+        const unitBoxes = [];
+        const unitEdges = [];
 
-        const leftoverBox = new THREE.BoxGeometry(leftoverArea, 10, this.baseDim);
-        const leftoverBoxMesh = new THREE.Mesh(leftoverBox, material);
-        leftoverBoxMesh.position.set(0, (totalStories + lastLoc) * 10, 0);
-        this.scene.add(leftoverBoxMesh);
+        locations.forEach((location, index) => {
+          const position = positions[index];
+          const geometry = new THREE.BoxGeometry(location.x, location.y, location.z);
+          const box = new THREE.Mesh(geometry, material);
+          box.position.set(position.x, position.y, position.z);
 
-        console.log(leftoverArea);
+          const edgeGeometry = new THREE.EdgesGeometry(geometry);
+          const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
+          const edge = new THREE.LineSegments(edgeGeometry, edgeMaterial);
+          edge.position.set(position.x, position.y, position.z);
 
-        prevLeftOverArea = leftoverArea;
+          unitBoxes.push(box);
+          unitEdges.push(edge);
+        });
 
-        totalStories += stories;
+        unitBoxes.forEach(box => {
+          this.scene.add(box);
+        });
+        unitEdges.forEach(edge => {
+          this.scene.add(edge);
+        });
+        this.boxes.push(unitBoxes);
+        this.boxEdges.push(unitEdges);
       });
     },
     onWindowResize() {

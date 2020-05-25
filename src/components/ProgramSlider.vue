@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <p class="label">{{ program }}</p>
-    <v-slider v-model="programUnits" label="Num Units" :max="100" :min="1" hide-details
+    <v-slider v-model="programUnits" label="Num Units" :max="100" :min="10" hide-details
 dense>
       <template v-slot:append>
         <p>{{ programUnits }}</p>
