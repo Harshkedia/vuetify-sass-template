@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 <template>
   <div ref="modelContainer" class="container">
     <canvas ref="viewer" />
@@ -48,6 +49,9 @@ export default {
     totalSqft() {
       return store.getters.totalSqft;
     },
+    baseArea() {
+      return this.totalSqft / this.programs.length;
+    },
     baseDim() {
       return Math.sqrt(this.baseArea);
     }
@@ -87,7 +91,7 @@ export default {
     animate() {
       requestAnimationFrame(this.animate);
       this.renderer.render(this.scene, this.camera);
-      // this.redrawBoundingBox();
+      this.redrawProgramGeometry();
     },
     redrawBoundingBox() {
       const { geometry } = this.boundingBox;
@@ -100,6 +104,31 @@ export default {
       const newEdgeGeometry = new THREE.EdgesGeometry(geometry);
       edgeGeometry.dispose();
       this.boundingBoxEdges.geometry = newEdgeGeometry;
+    },
+    redrawProgramGeometry() {
+      const boxInfos = this.computeProgramGeometry();
+      this.boxes.forEach((programBoxes, index) => {
+        const edges = this.boxEdges[index];
+        const { locations, positions } = boxInfos[index];
+        programBoxes.forEach((box, j) => {
+          const location = locations[j];
+          const position = positions[j];
+          const edge = edges[j];
+
+          const { geometry } = box;
+          const newGeometry = new THREE.BoxGeometry(location.x, location.y, location.z);
+          geometry.dispose();
+          // eslint-disable-next-line no-param-reassign
+          box.geometry = newGeometry;
+          box.position.set(position.x, position.y, position.z);
+
+          const edgeGeometry = edge.geometry;
+          const newEdgeGeometry = new THREE.EdgesGeometry(geometry);
+          edgeGeometry.dispose();
+          edge.geometry = newEdgeGeometry;
+          edge.position.set(position.x, position.y, position.z);
+        });
+      });
     },
     computeProgramGeometry() {
       const boxInfos = [];
