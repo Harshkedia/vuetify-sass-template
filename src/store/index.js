@@ -11,12 +11,52 @@ export default new Vuex.Store({
     totalSqft: 500,
     occupancyCost: 10,
     programs: [
-      { name: "Infusion", units: 1, gsf: 100, sqft: 100, cost: 10, totalCost: 1000 },
-      { name: "Physician Services", units: 1, gsf: 100, sqft: 100, cost: 10, totalCost: 1000 },
-      { name: "Radiation Oncology", units: 1, gsf: 100, sqft: 100, cost: 10, totalCost: 1000 },
-      { name: "Imaging/Diagnostics", units: 1, gsf: 100, sqft: 100, cost: 10, totalCost: 1000 },
-      { name: "PH, Lab, Support", units: 1, gsf: 100, sqft: 100, cost: 10, totalCost: 1000 },
-      { name: "Lob, Res, Ctr, ED, Off", units: 1, gsf: 100, sqft: 100, cost: 10, totalCost: 1000 }
+      { name: "Infusion", units: 1, gsf: 100, sqft: 100, cost: 10, totalCost: 1000, color: "blue" },
+      {
+        name: "Physician Services",
+        units: 1,
+        gsf: 100,
+        sqft: 100,
+        cost: 10,
+        totalCost: 1000,
+        color: "red"
+      },
+      {
+        name: "Radiation Oncology",
+        units: 1,
+        gsf: 100,
+        sqft: 100,
+        cost: 10,
+        totalCost: 1000,
+        color: "green"
+      },
+      {
+        name: "Imaging/Diagnostics",
+        units: 1,
+        gsf: 100,
+        sqft: 100,
+        cost: 10,
+        totalCost: 1000,
+        color: "yellow"
+      },
+      {
+        name: "PH, Lab, Support",
+        units: 1,
+        gsf: 100,
+        sqft: 100,
+        cost: 10,
+        totalCost: 1000,
+        color: "purple"
+      },
+      {
+        name: "Lob, Res, Ctr, ED, Off",
+        units: 1,
+        gsf: 100,
+        sqft: 100,
+        cost: 10,
+        totalCost: 1000,
+        color: "orange"
+      }
     ]
   },
   mutations: {

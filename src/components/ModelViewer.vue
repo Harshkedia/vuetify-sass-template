@@ -1,6 +1,12 @@
 /* eslint-disable no-param-reassign */
 <template>
   <div ref="modelContainer" class="container">
+    <v-slider v-model="baseArea" label="baseArea" :max="100000" :min="1000" hide-details
+dense>
+      <template v-slot:append>
+        <p>{{ baseArea }}</p>
+      </template>
+    </v-slider>
     <canvas ref="viewer" />
   </div>
 </template>
@@ -34,7 +40,8 @@ export default {
       boxLocations: [],
       boxPositions: [],
       boxes: [],
-      boxEdges: []
+      boxEdges: [],
+      baseArea: 1000
     };
   },
   computed: {
@@ -48,9 +55,6 @@ export default {
     },
     totalSqft() {
       return store.getters.totalSqft;
-    },
-    baseArea() {
-      return this.totalSqft / this.programs.length;
     },
     baseDim() {
       return Math.sqrt(this.baseArea);
@@ -87,103 +91,75 @@ export default {
 
       window.addEventListener("resize", this.onWindowResize, false);
       this.drawProgramGeometry();
+      this.drawBoundingBox();
     },
     animate() {
       requestAnimationFrame(this.animate);
       this.renderer.render(this.scene, this.camera);
       this.redrawProgramGeometry();
     },
-    redrawBoundingBox() {
-      const { geometry } = this.boundingBox;
-      const newGeometry = new THREE.BoxGeometry(this.baseDim, this.stories * 10, this.baseDim);
-      geometry.dispose();
-      this.boundingBox.geometry = newGeometry;
-      this.boundingBox.position.y = 0;
-
-      const edgeGeometry = this.boundingBoxEdges.geometry;
-      const newEdgeGeometry = new THREE.EdgesGeometry(geometry);
-      edgeGeometry.dispose();
-      this.boundingBoxEdges.geometry = newEdgeGeometry;
-    },
-    redrawProgramGeometry() {
-      const boxInfos = this.computeProgramGeometry();
-      this.boxes.forEach((programBoxes, index) => {
-        const edges = this.boxEdges[index];
-        const { locations, positions } = boxInfos[index];
-        programBoxes.forEach((box, j) => {
-          const location = locations[j];
-          const position = positions[j];
-          const edge = edges[j];
-
-          const { geometry } = box;
-          const newGeometry = new THREE.BoxGeometry(location.x, location.y, location.z);
-          geometry.dispose();
-          // eslint-disable-next-line no-param-reassign
-          box.geometry = newGeometry;
-          box.position.set(position.x, position.y, position.z);
-
-          const edgeGeometry = edge.geometry;
-          const newEdgeGeometry = new THREE.EdgesGeometry(geometry);
-          edgeGeometry.dispose();
-          edge.geometry = newEdgeGeometry;
-          edge.position.set(position.x, position.y, position.z);
-        });
+    drawBoundingBox() {
+      const numStories = Math.ceil(this.totalSqft / this.baseArea);
+      console.log(numStories);
+      console.log(this.totalSqft);
+      const dimension = { width: this.baseDim, length: this.baseDim, height: numStories * 10 };
+      const geometry = new THREE.BoxGeometry(dimension.width, dimension.height, dimension.length);
+      const material = new THREE.MeshBasicMaterial({
+        color: 0x000000,
+        transparent: true,
+        opacity: 0.1
       });
-    },
-    computeProgramGeometry() {
-      const boxInfos = [];
-      this.programs.forEach((program, index) => {
-        const numUnits = program.units;
-        const unitGSF = program.gsf;
-        const unitDim = unitGSF / this.baseDim;
-        const level = index;
-        const boxLocations = [];
-        const boxPositions = [];
+      const box = new THREE.Mesh(geometry, material);
+      box.position.set(0, 0, 0);
 
-        let curUnitLoc = 0;
-        for (let i = 0; i < numUnits; i += 1) {
-          const boxLocation = { x: unitDim, y: 10, z: this.baseDim };
-          const boxPosition = { x: curUnitLoc, y: level * 10, z: 0 };
+      const edgeGeometry = new THREE.EdgesGeometry(geometry);
+      const edgeMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
+      const edge = new THREE.LineSegments(edgeGeometry, edgeMaterial);
 
-          curUnitLoc += unitDim;
-          boxLocations.push(boxLocation);
-          boxPositions.push(boxPosition);
-        }
-        boxInfos.push({ locations: boxLocations, positions: boxPositions });
-      });
-      return boxInfos;
+      this.scene.add(box);
+      this.scene.add(edge);
     },
     drawProgramGeometry() {
-      const boxInfo = this.computeProgramGeometry();
-      boxInfo.forEach(info => {
-        const material = new THREE.MeshBasicMaterial({ color: this.getRandomColor() });
-        const { locations, positions } = info;
-        const unitBoxes = [];
-        const unitEdges = [];
+      const { boxDimensions, boxLocations } = this.programBoxGeometry();
+      boxDimensions.forEach((dimension, index) => {
+        const location = boxLocations[index];
 
-        locations.forEach((location, index) => {
-          const position = positions[index];
-          const geometry = new THREE.BoxGeometry(location.x, location.y, location.z);
-          const box = new THREE.Mesh(geometry, material);
-          box.position.set(position.x, position.y, position.z);
+        const geometry = new THREE.BoxGeometry(dimension.width, dimension.height, dimension.length);
+        const material = new THREE.MeshBasicMaterial({ color: dimension.color });
+        const box = new THREE.Mesh(geometry, material);
+        box.position.set(location.x, location.z, location.y);
 
-          const edgeGeometry = new THREE.EdgesGeometry(geometry);
-          const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
-          const edge = new THREE.LineSegments(edgeGeometry, edgeMaterial);
-          edge.position.set(position.x, position.y, position.z);
+        const edgeGeometry = new THREE.EdgesGeometry(geometry);
+        const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
+        const edge = new THREE.LineSegments(edgeGeometry, edgeMaterial);
+        edge.position.set(location.x, location.z, location.y);
 
-          unitBoxes.push(box);
-          unitEdges.push(edge);
-        });
+        this.scene.add(box);
+        this.scene.add(edge);
 
-        unitBoxes.forEach(box => {
-          this.scene.add(box);
-        });
-        unitEdges.forEach(edge => {
-          this.scene.add(edge);
-        });
-        this.boxes.push(unitBoxes);
-        this.boxEdges.push(unitEdges);
+        this.boxes.push(box);
+        this.boxEdges.push(edge);
+      });
+    },
+    redrawProgramGeometry() {
+      const { boxDimensions, boxLocations } = this.programBoxGeometry();
+      this.boxes.forEach((box, index) => {
+        const edge = this.boxEdges[index];
+        const location = boxDimensions[index];
+        const position = boxLocations[index];
+
+        const { geometry } = box;
+        const newGeometry = new THREE.BoxGeometry(location.width, location.height, location.length);
+        geometry.dispose();
+        // eslint-disable-next-line no-param-reassign
+        box.geometry = newGeometry;
+        box.position.set(position.x, position.z, position.y);
+
+        const edgeGeometry = edge.geometry;
+        const newEdgeGeometry = new THREE.EdgesGeometry(geometry);
+        edgeGeometry.dispose();
+        edge.geometry = newEdgeGeometry;
+        edge.position.set(position.x, position.z, position.y);
       });
     },
     onWindowResize() {
@@ -206,6 +182,61 @@ export default {
     },
     almostEquals(x, y) {
       return Math.abs(x - y) < 1;
+    },
+    programBoxAreas() {
+      const programBoxes = [];
+      this.programs.forEach(program => {
+        let remainingProgramArea = program.sqft;
+
+        while (remainingProgramArea > 0) {
+          const remainingBoxes = remainingProgramArea / this.baseArea;
+          if (remainingBoxes < 1) {
+            programBoxes.push({
+              name: program.name,
+              area: remainingProgramArea,
+              color: program.color
+            });
+          } else {
+            programBoxes.push({
+              name: program.name,
+              area: this.baseArea,
+              color: program.color
+            });
+          }
+          remainingProgramArea -= this.baseArea;
+        }
+      });
+      return programBoxes;
+    },
+    programBoxGeometry() {
+      const boxAreas = this.programBoxAreas();
+      const boxDimensions = [];
+      boxAreas.forEach(box => {
+        const width = this.baseDim;
+        const length = box.area / this.baseDim;
+        const height = 10;
+        const { color } = box;
+        boxDimensions.push({ width, length, height, color });
+      });
+
+      const boxLocations = [];
+
+      boxDimensions.forEach((dimension, index) => {
+        if (index === 0) {
+          boxLocations.push({ x: 0, y: 0, z: 0 });
+        } else {
+          const prevLocation = boxLocations[index - 1];
+          const prevDimension = boxDimensions[index - 1];
+          const prevEnd = prevLocation.y + prevDimension.length;
+          if (prevEnd >= this.baseDim) {
+            boxLocations.push({ x: 0, y: 0, z: prevLocation.z + 10 });
+          } else {
+            boxLocations.push({ x: 0, y: prevEnd, z: prevLocation.z });
+          }
+        }
+      });
+
+      return { boxDimensions, boxLocations };
     }
   }
 };
