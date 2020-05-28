@@ -125,23 +125,21 @@ export default {
         const geometry = new THREE.BoxGeometry(dimension.width, dimension.height, dimension.length);
         const material = new THREE.MeshBasicMaterial({ color: dimension.color });
         const box = new THREE.Mesh(geometry, material);
-        box.translateY(location.z);
-        box.translateZ(location.y);
+        box.updateMatrixWorld();
+        box.position.set(location.x, location.z, location.y);
 
         // box.position.set(location.x, location.z, location.y);
 
-        const edgeGeometry = new THREE.EdgesGeometry(geometry);
-        const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
-        const edge = new THREE.LineSegments(edgeGeometry, edgeMaterial);
-
-        edge.translateY(location.z);
-        edge.translateZ(location.y);
+        // const edgeGeometry = new THREE.EdgesGeometry(geometry);
+        // const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
+        // const edge = new THREE.LineSegments(edgeGeometry, edgeMaterial);
+        // edge.position.set(location.x, location.z, location.y);
 
         this.scene.add(box);
-        this.scene.add(edge);
+        // this.scene.add(edge);
 
         this.boxes.push(box);
-        this.boxEdges.push(edge);
+        // this.boxEdges.push(edge);
       });
     },
     redrawProgramGeometry() {
