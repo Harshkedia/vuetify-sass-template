@@ -91,17 +91,15 @@ export default {
 
       window.addEventListener("resize", this.onWindowResize, false);
       this.drawProgramGeometry();
-      this.drawBoundingBox();
+      // this.drawBoundingBox();
     },
     animate() {
       requestAnimationFrame(this.animate);
       this.renderer.render(this.scene, this.camera);
-      this.redrawProgramGeometry();
+      // this.redrawProgramGeometry();
     },
     drawBoundingBox() {
       const numStories = Math.ceil(this.totalSqft / this.baseArea);
-      console.log(numStories);
-      console.log(this.totalSqft);
       const dimension = { width: this.baseDim, length: this.baseDim, height: numStories * 10 };
       const geometry = new THREE.BoxGeometry(dimension.width, dimension.height, dimension.length);
       const material = new THREE.MeshBasicMaterial({
@@ -127,12 +125,17 @@ export default {
         const geometry = new THREE.BoxGeometry(dimension.width, dimension.height, dimension.length);
         const material = new THREE.MeshBasicMaterial({ color: dimension.color });
         const box = new THREE.Mesh(geometry, material);
-        box.position.set(location.x, location.z, location.y);
+        box.translateY(location.z);
+        box.translateZ(location.y);
+
+        // box.position.set(location.x, location.z, location.y);
 
         const edgeGeometry = new THREE.EdgesGeometry(geometry);
         const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
         const edge = new THREE.LineSegments(edgeGeometry, edgeMaterial);
-        edge.position.set(location.x, location.z, location.y);
+
+        edge.translateY(location.z);
+        edge.translateZ(location.y);
 
         this.scene.add(box);
         this.scene.add(edge);
@@ -185,27 +188,40 @@ export default {
     },
     programBoxAreas() {
       const programBoxes = [];
+      let prevBoxArea = this.baseArea;
+
       this.programs.forEach(program => {
         let remainingProgramArea = program.sqft;
-
         while (remainingProgramArea > 0) {
           const remainingBoxes = remainingProgramArea / this.baseArea;
-          if (remainingBoxes < 1) {
+          let curBoxArea;
+          if (prevBoxArea < this.baseArea) {
+            curBoxArea = this.baseArea - prevBoxArea;
+            programBoxes.push({
+              name: program.name,
+              area: curBoxArea,
+              color: program.color
+            });
+          } else if (remainingBoxes < 1) {
+            curBoxArea = remainingProgramArea;
             programBoxes.push({
               name: program.name,
               area: remainingProgramArea,
               color: program.color
             });
           } else {
+            curBoxArea = this.baseArea;
             programBoxes.push({
               name: program.name,
               area: this.baseArea,
               color: program.color
             });
           }
-          remainingProgramArea -= this.baseArea;
+          prevBoxArea = curBoxArea;
+          remainingProgramArea -= curBoxArea;
         }
       });
+      console.log(programBoxes);
       return programBoxes;
     },
     programBoxGeometry() {
@@ -235,7 +251,6 @@ export default {
           }
         }
       });
-
       return { boxDimensions, boxLocations };
     }
   }
