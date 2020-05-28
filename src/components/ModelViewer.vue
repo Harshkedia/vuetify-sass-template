@@ -251,6 +251,7 @@ export default {
           }
         }
       });
+      console.log(boxDimensions, boxLocations);
       return { boxDimensions, boxLocations };
     }
   }
