@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 <template>
   <div ref="modelContainer" class="container">
-    <v-slider v-model="baseArea" label="baseArea" :max="100000" :min="1000" hide-details
+    <v-slider v-model="baseArea" label="baseArea" :max="100000" :min="2000" hide-details
 dense>
       <template v-slot:append>
         <p>{{ baseArea }}</p>
@@ -91,7 +91,7 @@ export default {
 
       window.addEventListener("resize", this.onWindowResize, false);
       this.drawProgramGeometry();
-      // this.drawBoundingBox();
+      this.drawBoundingBox();
     },
     animate() {
       requestAnimationFrame(this.animate);
@@ -105,14 +105,15 @@ export default {
       const material = new THREE.MeshBasicMaterial({
         color: 0x000000,
         transparent: true,
-        opacity: 0.1
+        opacity: 0
       });
       const box = new THREE.Mesh(geometry, material);
-      box.position.set(0, 0, 0);
+      box.position.set(0, dimension.height / 2, dimension.length / 2);
 
       const edgeGeometry = new THREE.EdgesGeometry(geometry);
       const edgeMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
       const edge = new THREE.LineSegments(edgeGeometry, edgeMaterial);
+      edge.position.set(0, dimension.height / 2, dimension.length / 2);
 
       this.scene.add(box);
       this.scene.add(edge);
@@ -125,21 +126,19 @@ export default {
         const geometry = new THREE.BoxGeometry(dimension.width, dimension.height, dimension.length);
         const material = new THREE.MeshBasicMaterial({ color: dimension.color });
         const box = new THREE.Mesh(geometry, material);
-        box.updateMatrixWorld();
-        box.position.set(location.x, location.z, location.y);
 
-        // box.position.set(location.x, location.z, location.y);
+        box.position.set(location.x, location.z, location.y + dimension.length / 2);
 
-        // const edgeGeometry = new THREE.EdgesGeometry(geometry);
-        // const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
-        // const edge = new THREE.LineSegments(edgeGeometry, edgeMaterial);
-        // edge.position.set(location.x, location.z, location.y);
+        const edgeGeometry = new THREE.EdgesGeometry(geometry);
+        const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
+        const edge = new THREE.LineSegments(edgeGeometry, edgeMaterial);
+        edge.position.set(location.x, location.z, location.y + dimension.length / 2);
 
         this.scene.add(box);
-        // this.scene.add(edge);
+        this.scene.add(edge);
 
         this.boxes.push(box);
-        // this.boxEdges.push(edge);
+        this.boxEdges.push(edge);
       });
     },
     redrawProgramGeometry() {
@@ -154,13 +153,13 @@ export default {
         geometry.dispose();
         // eslint-disable-next-line no-param-reassign
         box.geometry = newGeometry;
-        box.position.set(position.x, position.z, position.y);
+        box.position.set(position.x, position.z, position.y + location.length / 2);
 
         const edgeGeometry = edge.geometry;
         const newEdgeGeometry = new THREE.EdgesGeometry(geometry);
         edgeGeometry.dispose();
         edge.geometry = newEdgeGeometry;
-        edge.position.set(position.x, position.z, position.y);
+        edge.position.set(position.x, position.z, position.y + location.length / 2);
       });
     },
     onWindowResize() {
@@ -219,7 +218,6 @@ export default {
           remainingProgramArea -= curBoxArea;
         }
       });
-      console.log(programBoxes);
       return programBoxes;
     },
     programBoxGeometry() {
@@ -249,7 +247,6 @@ export default {
           }
         }
       });
-      console.log(boxDimensions, boxLocations);
       return { boxDimensions, boxLocations };
     }
   }
