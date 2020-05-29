@@ -59,6 +59,7 @@ export default {
 
 <style scoped>
 .header {
+  margin: 2px;
   font-size: 12px;
   padding: 5px;
 }

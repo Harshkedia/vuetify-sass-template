@@ -10,12 +10,13 @@
         <div class="right-row">
           <total-costs />
           <cost-chart />
-          <div><br ></div>
-          <div><br ></div>
-          <div><br ></div>
-          <div><br ></div>
+          <div><br /><br /><br /></div>
+          <div><br /><br /><br /></div>
+          <div><br /><br /><br /></div>
+          <div><br /><br /><br /></div>
         </div>
       </div>
+      <Footer />
     </v-content>
   </v-app>
 </template>
@@ -27,6 +28,7 @@ import CostSliders from "./components/CostSliders.vue";
 import CostChart from "./components/CostChart.vue";
 import TotalCosts from "./components/TotalCosts.vue";
 import ModelViewer from "./components/ModelViewer.vue";
+import Footer from "./components/Footer.vue";
 
 export default {
   name: "App",
@@ -36,7 +38,8 @@ export default {
     CostSliders,
     CostChart,
     TotalCosts,
-    ModelViewer
+    ModelViewer,
+    Footer
   },
 
   data: () => ({}),

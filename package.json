@@ -10,6 +10,11 @@
   "dependencies": {
     "chart.js": "^2.9.3",
     "core-js": "^3.6.4",
+    "fibers": "^5.0.0",
+    "material-design-icons-iconfont": "^5.0.1",
+    "node-sass": "^4.14.1",
+    "sass": "^1.26.5",
+    "sass-loader": "^8.0.2",
     "three": "^0.116.1",
     "three.js": "^0.77.1",
     "vue": "^2.6.11",

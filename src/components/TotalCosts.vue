@@ -56,7 +56,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .program-grid {
   display: grid;
   gap: 0.5rem;
@@ -78,6 +78,7 @@ p {
 .total {
   padding: 10px;
   font-size: 15px;
-  background-color: grey;
+  background-color: $navy;
+  color: white;
 }
 </style>

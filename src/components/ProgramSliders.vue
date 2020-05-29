@@ -38,7 +38,7 @@ export default {
 }
 
 .program-slider {
-  margin-top: -10px;
-  margin-bottom: -10px;
+  margin-top: -12px;
+  margin-bottom: -12px;
 }
 </style>

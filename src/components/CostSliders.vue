@@ -56,6 +56,6 @@ export default {
 }
 
 .cost-slider {
-  margin: -10px;
+  margin: -17px;
 }
 </style>

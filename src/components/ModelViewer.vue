@@ -112,13 +112,13 @@ export default {
       const material = new THREE.MeshBasicMaterial({
         color: 0x000000,
         transparent: true,
-        opacity: 0
+        opacity: 0.1
       });
       const box = new THREE.Mesh(geometry, material);
       box.position.set(0, dimension.height / 2, dimension.length / 2);
 
       const edgeGeometry = new THREE.EdgesGeometry(geometry);
-      const edgeMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
+      const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
       const edge = new THREE.LineSegments(edgeGeometry, edgeMaterial);
       edge.position.set(0, dimension.height / 2, dimension.length / 2);
 
@@ -192,14 +192,6 @@ export default {
         this.$refs.modelContainer.offsetWidth,
         this.$refs.modelContainer.offsetHeight
       );
-    },
-    getRandomColor() {
-      const letters = "0123456789ABCDEF";
-      let color = "#";
-      for (let i = 0; i < 6; i += 1) {
-        color += letters[Math.floor(Math.random() * 16)];
-      }
-      return color;
     },
     programBoxAreas() {
       const programBoxes = [];

@@ -18,7 +18,7 @@ export default new Vuex.Store({
         sqft: 100,
         cost: 200,
         totalCost: 1000,
-        color: "blue"
+        color: "#00c1de"
       },
       {
         name: "Physician Services",
@@ -27,7 +27,7 @@ export default new Vuex.Store({
         sqft: 100,
         cost: 10,
         totalCost: 1000,
-        color: "red"
+        color: "#ff4611"
       },
       {
         name: "Radiation Oncology",
@@ -36,7 +36,7 @@ export default new Vuex.Store({
         sqft: 100,
         cost: 10,
         totalCost: 1000,
-        color: "green"
+        color: "#42b983"
       },
       {
         name: "Imaging/Diagnostics",
@@ -45,7 +45,7 @@ export default new Vuex.Store({
         sqft: 100,
         cost: 10,
         totalCost: 1000,
-        color: "yellow"
+        color: "#f8e946"
       },
       {
         name: "PH, Lab, Support",
@@ -54,7 +54,7 @@ export default new Vuex.Store({
         sqft: 100,
         cost: 10,
         totalCost: 1000,
-        color: "purple"
+        color: "#ffa300"
       },
       {
         name: "Lob, Res, Ctr, ED, Off",
@@ -63,7 +63,7 @@ export default new Vuex.Store({
         sqft: 100,
         cost: 10,
         totalCost: 1000,
-        color: "orange"
+        color: "#b42371"
       }
     ]
   },

@@ -59,8 +59,8 @@ export default {
           datasets: [
             {
               label: "Option A",
-              backgroundColor: "brown",
-              borderColor: "brown",
+              backgroundColor: "#002855",
+              borderColor: "#002855",
               data: this.lifeCycleCost,
               fill: false
             }
