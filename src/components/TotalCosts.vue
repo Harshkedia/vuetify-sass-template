@@ -1,19 +1,21 @@
 <template>
-  <v-container class="program-grid">
-    <v-slider
-      v-model="occupancyCost"
-      label="Occupancy Cost / SF"
-      :max="100"
-      :min="1"
-      hide-details
-      dense
-    >
-      <template v-slot:append>
-        <p>{{ occupancyCost }}</p>
-      </template>
-    </v-slider>
-    <p class="total">Construction Cost: ${{ totalCost }}</p>
-    <p class="total">Occupancy Cost: ${{ totalOccupancyCost }}</p>
+  <v-container>
+    <v-card class="program-grid" outlined>
+      <v-slider
+        v-model="occupancyCost"
+        label="Occupancy Cost / SF"
+        :max="100"
+        :min="10"
+        hide-details
+        dense
+      >
+        <template v-slot:append>
+          <p>{{ occupancyCost }}</p>
+        </template>
+      </v-slider>
+      <p class="total">Construction Cost: ${{ totalCost }}</p>
+      <p class="total">Occupancy Cost: ${{ totalOccupancyCost }}</p>
+    </v-card>
   </v-container>
 </template>
 
@@ -59,6 +61,7 @@ export default {
   display: grid;
   gap: 0.5rem;
   grid-template-columns: 1fr;
+  padding: 20px;
 }
 
 p {
@@ -70,12 +73,11 @@ p {
 }
 
 ::v-deep .v-label {
-  font-size: 20px;
+  font-size: 10px;
 }
 .total {
-  margin: 10px;
   padding: 10px;
-  font-size: 20px;
-  background-color: cadetblue;
+  font-size: 15px;
+  background-color: grey;
 }
 </style>

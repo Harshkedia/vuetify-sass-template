@@ -3,13 +3,17 @@
     <v-content>
       <div class="app-grid">
         <div class="left-row">
-          <program-sliders :program-names="programNames" />
-          <cost-sliders :program-names="programNames" />
-          <total-costs />
+          <program-sliders :programs="programs" />
+          <cost-sliders :programs="programs" />
+          <model-viewer />
         </div>
         <div class="right-row">
+          <total-costs />
           <cost-chart />
-          <model-viewer />
+          <div><br ></div>
+          <div><br ></div>
+          <div><br ></div>
+          <div><br ></div>
         </div>
       </div>
     </v-content>
@@ -38,6 +42,11 @@ export default {
   data: () => ({}),
 
   computed: {
+    programs: {
+      get() {
+        return store.getters.programs;
+      }
+    },
     programNames: {
       get() {
         return store.getters.programs.map(program => {

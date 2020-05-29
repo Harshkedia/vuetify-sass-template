@@ -1,14 +1,14 @@
 <template>
   <v-container class="cost-grid">
-    <p class="label">{{ program }}</p>
-    <p>{{ programSQF }} SF</p>
-    <v-slider v-model="programCost" :max="100" :min="1" hide-details>
+    <p class="header" :style="{ backgroundColor: programColor }">{{ program }}</p>
+    <p class="label">{{ programSQF }} SF</p>
+    <v-slider v-model="programCost" :max="3000" :min="150" hide-details>
       <template v-slot:append>
-        <p>${{ programCost }}</p>
+        <p class="label">${{ programCost }}</p>
       </template>
     </v-slider>
 
-    <p>${{ programTotalCost }}</p>
+    <p class="label">${{ programTotalCost }}</p>
   </v-container>
 </template>
 
@@ -25,6 +25,10 @@ export default {
     squareFeet: {
       type: Number,
       default: 1000
+    },
+    programColor: {
+      type: String,
+      default: "red"
     }
   },
   data: () => {
@@ -67,8 +71,13 @@ p {
   padding: 5px;
 }
 
+.header {
+  font-size: 12px;
+  padding: 5px;
+}
+
 .label {
-  background-color: brown;
+  font-size: 10px;
 }
 
 .cost-grid {

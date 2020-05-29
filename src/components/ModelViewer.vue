@@ -1,14 +1,24 @@
 /* eslint-disable no-param-reassign */
 <template>
-  <div ref="modelContainer" class="container">
-    <v-slider v-model="baseArea" label="baseArea" :max="100000" :min="2000" hide-details
-dense>
-      <template v-slot:append>
-        <p>{{ baseArea }}</p>
-      </template>
-    </v-slider>
-    <canvas ref="viewer" />
-  </div>
+  <v-container>
+    <v-card class="card" outlined>
+      <div ref="modelContainer" class="container">
+        <canvas ref="viewer" />
+        <v-slider
+          v-model="baseArea"
+          label="Base Area"
+          :max="100000"
+          :min="10000"
+          hide-details
+          dense
+        >
+          <template v-slot:append>
+            <p>{{ baseArea }}</p>
+          </template>
+        </v-slider>
+      </div>
+    </v-card>
+  </v-container>
 </template>
 
 <script>
@@ -34,14 +44,13 @@ export default {
       renderer: null,
       cameraControls: null,
       effectController: null,
-      teapotSize: 400,
       ambientLight: null,
       light: null,
-      boxLocations: [],
-      boxPositions: [],
+      boundingBox: null,
+      boundingBoxEdges: null,
       boxes: [],
       boxEdges: [],
-      baseArea: 1000
+      baseArea: 10000
     };
   },
   computed: {
@@ -52,9 +61,6 @@ export default {
       get() {
         return store.getters.programs;
       }
-    },
-    totalSqft() {
-      return store.getters.totalSqft;
     },
     baseDim() {
       return Math.sqrt(this.baseArea);
@@ -84,19 +90,20 @@ export default {
       this.cameraControls = new OrbitControls(this.camera, this.renderer.domElement);
       this.cameraControls.addEventListener("change", this.animate);
       this.scene = new THREE.Scene();
-      this.scene.background = new THREE.Color(0xaaaaaa);
+      this.scene.background = new THREE.Color(0xffffff);
 
       this.scene.add(this.ambientLight);
       this.scene.add(this.light);
 
       window.addEventListener("resize", this.onWindowResize, false);
-      this.drawProgramGeometry();
       this.drawBoundingBox();
+      this.drawProgramGeometry();
     },
     animate() {
       requestAnimationFrame(this.animate);
       this.renderer.render(this.scene, this.camera);
-      // this.redrawProgramGeometry();
+      this.redrawProgramGeometry();
+      this.redrawBoundingBox();
     },
     drawBoundingBox() {
       const numStories = Math.ceil(this.totalSqft / this.baseArea);
@@ -117,9 +124,26 @@ export default {
 
       this.scene.add(box);
       this.scene.add(edge);
+      this.boundingBox = box;
+      this.boundingBoxEdges = edge;
+    },
+    redrawBoundingBox() {
+      this.disposeBoundingBox();
+      this.drawBoundingBox();
+    },
+    disposeBoundingBox() {
+      this.boundingBox.geometry.dispose();
+      this.boundingBox.material.dispose();
+      this.scene.remove(this.boundingBox);
+
+      this.boundingBoxEdges.geometry.dispose();
+      this.boundingBoxEdges.material.dispose();
+      this.scene.remove(this.boundingBoxEdges);
     },
     drawProgramGeometry() {
       const { boxDimensions, boxLocations } = this.programBoxGeometry();
+      const boxes = [];
+      const boxEdges = [];
       boxDimensions.forEach((dimension, index) => {
         const location = boxLocations[index];
 
@@ -137,29 +161,26 @@ export default {
         this.scene.add(box);
         this.scene.add(edge);
 
-        this.boxes.push(box);
-        this.boxEdges.push(edge);
+        boxes.push(box);
+        boxEdges.push(edge);
       });
+      this.boxes = boxes;
+      this.boxEdges = boxEdges;
     },
     redrawProgramGeometry() {
-      const { boxDimensions, boxLocations } = this.programBoxGeometry();
+      this.disposeProgramGeometry();
+      this.drawProgramGeometry();
+    },
+    disposeProgramGeometry() {
       this.boxes.forEach((box, index) => {
         const edge = this.boxEdges[index];
-        const location = boxDimensions[index];
-        const position = boxLocations[index];
+        box.geometry.dispose();
+        box.material.dispose();
+        this.scene.remove(box);
 
-        const { geometry } = box;
-        const newGeometry = new THREE.BoxGeometry(location.width, location.height, location.length);
-        geometry.dispose();
-        // eslint-disable-next-line no-param-reassign
-        box.geometry = newGeometry;
-        box.position.set(position.x, position.z, position.y + location.length / 2);
-
-        const edgeGeometry = edge.geometry;
-        const newEdgeGeometry = new THREE.EdgesGeometry(geometry);
-        edgeGeometry.dispose();
-        edge.geometry = newEdgeGeometry;
-        edge.position.set(position.x, position.z, position.y + location.length / 2);
+        edge.geometry.dispose();
+        edge.material.dispose();
+        this.scene.remove(edge);
       });
     },
     onWindowResize() {
@@ -180,41 +201,26 @@ export default {
       }
       return color;
     },
-    almostEquals(x, y) {
-      return Math.abs(x - y) < 1;
-    },
     programBoxAreas() {
       const programBoxes = [];
-      let prevBoxArea = this.baseArea;
+      let remainingFloorArea = this.baseArea;
 
       this.programs.forEach(program => {
         let remainingProgramArea = program.sqft;
-        while (remainingProgramArea > 0) {
-          const remainingBoxes = remainingProgramArea / this.baseArea;
+        while (remainingProgramArea > 1) {
           let curBoxArea;
-          if (prevBoxArea < this.baseArea) {
-            curBoxArea = this.baseArea - prevBoxArea;
-            programBoxes.push({
-              name: program.name,
-              area: curBoxArea,
-              color: program.color
-            });
-          } else if (remainingBoxes < 1) {
-            curBoxArea = remainingProgramArea;
-            programBoxes.push({
-              name: program.name,
-              area: remainingProgramArea,
-              color: program.color
-            });
+          if (remainingProgramArea >= remainingFloorArea) {
+            curBoxArea = remainingFloorArea;
+            remainingFloorArea = this.baseArea;
           } else {
-            curBoxArea = this.baseArea;
-            programBoxes.push({
-              name: program.name,
-              area: this.baseArea,
-              color: program.color
-            });
+            curBoxArea = remainingProgramArea;
+            remainingFloorArea -= curBoxArea;
           }
-          prevBoxArea = curBoxArea;
+          programBoxes.push({
+            name: program.name,
+            area: curBoxArea,
+            color: program.color
+          });
           remainingProgramArea -= curBoxArea;
         }
       });
@@ -240,7 +246,8 @@ export default {
           const prevLocation = boxLocations[index - 1];
           const prevDimension = boxDimensions[index - 1];
           const prevEnd = prevLocation.y + prevDimension.length;
-          if (prevEnd >= this.baseDim) {
+
+          if (prevEnd >= this.baseDim - 1) {
             boxLocations.push({ x: 0, y: 0, z: prevLocation.z + 10 });
           } else {
             boxLocations.push({ x: 0, y: prevEnd, z: prevLocation.z });
@@ -256,5 +263,14 @@ export default {
 <style scoped>
 .container {
   padding-left: 20px;
+}
+.card {
+  padding: 20px;
+}
+p {
+  font-size: 10px;
+}
+::v-deep .v-label {
+  font-size: 10px;
 }
 </style>

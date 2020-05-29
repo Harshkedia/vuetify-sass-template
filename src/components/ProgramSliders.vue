@@ -1,11 +1,14 @@
 <template>
-  <v-container class="program-grid">
-    <program-slider
-      v-for="name in programNames"
-      :key="name"
-      :program="name"
-      class="program-slider"
-    />
+  <v-container>
+    <v-card class="program-grid" fluid outlined>
+      <program-slider
+        v-for="program in programs"
+        :key="program.name"
+        :program="program.name"
+        :program-color="program.color"
+        class="program-slider"
+      />
+    </v-card>
   </v-container>
 </template>
 
@@ -16,7 +19,7 @@ export default {
   name: "ProgramSliders",
   components: { ProgramSlider },
   props: {
-    programNames: {
+    programs: {
       type: Array,
       default: () => {
         return [];
@@ -28,6 +31,7 @@ export default {
 
 <style scoped>
 .program-grid {
+  padding: 20px;
   display: grid;
   gap: 0.5rem;
   grid-template-columns: 1fr 1fr 1fr;

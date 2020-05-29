@@ -1,8 +1,12 @@
 /* eslint-disable no-param-reassign */
 <template>
-  <div>
-    <canvas ref="chart" />
-  </div>
+  <v-container>
+    <v-card outlined class="card">
+      <div>
+        <canvas ref="chart" />
+      </div>
+    </v-card>
+  </v-container>
 </template>
 
 <script>
@@ -30,8 +34,8 @@ export default {
     },
     lifeCycleCost() {
       const arr = [];
-      for (let i = 0; i < 3; i += 1) {
-        arr.push(this.totalCost / 3);
+      for (let i = 1; i < 4; i += 1) {
+        arr.push(this.totalCost / i);
       }
       arr.reverse();
       for (let i = 2; i < 14; i += 1) {
@@ -70,7 +74,7 @@ export default {
         responsive: true,
         title: {
           display: true,
-          text: "Chart.js Line Chart"
+          text: "Scenario Model"
         },
         tooltips: {
           mode: "index",
@@ -128,4 +132,8 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.card {
+  padding: 20px;
+}
+</style>

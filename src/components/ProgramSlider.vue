@@ -1,16 +1,16 @@
 <template>
   <v-container>
-    <p class="label">{{ program }}</p>
-    <v-slider v-model="programUnits" label="Num Units" :max="100" :min="15" hide-details
+    <p class="header" :style="{ backgroundColor: programColor }">{{ program }}</p>
+    <v-slider v-model="programUnits" label="Num Units" :max="100" :min="10" hide-details
 dense>
       <template v-slot:append>
-        <p>{{ programUnits }}</p>
+        <p class="label">{{ programUnits }}</p>
       </template>
     </v-slider>
-    <v-slider v-model="programGSF" label="GSF / Unit" :max="5000" :min="100" hide-details
+    <v-slider v-model="programGSF" label="GSF / Unit" :max="5000" :min="500" hide-details
 dense>
       <template v-slot:append>
-        <p>{{ programGSF }}</p>
+        <p class="label">{{ programGSF }}</p>
       </template>
     </v-slider>
   </v-container>
@@ -25,6 +25,10 @@ export default {
     program: {
       type: String,
       default: "Program Name"
+    },
+    programColor: {
+      type: String,
+      default: "red"
     }
   },
   data: () => {
@@ -54,12 +58,13 @@ export default {
 </script>
 
 <style scoped>
-p {
-  font-size: 15px;
+.header {
+  font-size: 12px;
   padding: 5px;
 }
+
 .label {
-  background-color: brown;
+  font-size: 10px;
 }
 
 ::v-deep .v-label {

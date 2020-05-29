@@ -11,7 +11,15 @@ export default new Vuex.Store({
     totalSqft: 500,
     occupancyCost: 10,
     programs: [
-      { name: "Infusion", units: 1, gsf: 100, sqft: 100, cost: 10, totalCost: 1000, color: "blue" },
+      {
+        name: "Infusion",
+        units: 1,
+        gsf: 100,
+        sqft: 100,
+        cost: 200,
+        totalCost: 1000,
+        color: "blue"
+      },
       {
         name: "Physician Services",
         units: 1,
