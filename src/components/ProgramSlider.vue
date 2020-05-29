@@ -1,14 +1,28 @@
 <template>
   <v-container>
     <p class="header" :style="{ backgroundColor: programColor }">{{ program }}</p>
-    <v-slider v-model="programUnits" label="Num Units" :max="100" :min="10" hide-details
-dense>
+    <v-slider
+      v-model="programUnits"
+      label="Num Units"
+      :max="100"
+      :min="10"
+      hide-details
+      dense
+      color="#002855"
+    >
       <template v-slot:append>
         <p class="label">{{ programUnits }}</p>
       </template>
     </v-slider>
-    <v-slider v-model="programGSF" label="GSF / Unit" :max="5000" :min="500" hide-details
-dense>
+    <v-slider
+      v-model="programGSF"
+      label="GSF / Unit"
+      :max="5000"
+      :min="500"
+      hide-details
+      dense
+      color="#002855"
+    >
       <template v-slot:append>
         <p class="label">{{ programGSF }}</p>
       </template>

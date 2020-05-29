@@ -11,6 +11,7 @@
           :min="10000"
           hide-details
           dense
+          color="#002855"
         >
           <template v-slot:append>
             <p>{{ baseArea }}</p>
@@ -46,8 +47,6 @@ export default {
       effectController: null,
       ambientLight: null,
       light: null,
-      boundingBox: null,
-      boundingBoxEdges: null,
       boxes: [],
       boxEdges: [],
       baseArea: 10000
@@ -96,40 +95,12 @@ export default {
       this.scene.add(this.light);
 
       window.addEventListener("resize", this.onWindowResize, false);
-      this.drawBoundingBox();
       this.drawProgramGeometry();
     },
     animate() {
       requestAnimationFrame(this.animate);
       this.renderer.render(this.scene, this.camera);
       this.redrawProgramGeometry();
-      this.redrawBoundingBox();
-    },
-    drawBoundingBox() {
-      const numStories = Math.ceil(this.totalSqft / this.baseArea);
-      const dimension = { width: this.baseDim, length: this.baseDim, height: numStories * 10 };
-      const geometry = new THREE.BoxGeometry(dimension.width, dimension.height, dimension.length);
-      const material = new THREE.MeshBasicMaterial({
-        color: 0x000000,
-        transparent: true,
-        opacity: 0.1
-      });
-      const box = new THREE.Mesh(geometry, material);
-      box.position.set(0, dimension.height / 2, dimension.length / 2);
-
-      const edgeGeometry = new THREE.EdgesGeometry(geometry);
-      const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
-      const edge = new THREE.LineSegments(edgeGeometry, edgeMaterial);
-      edge.position.set(0, dimension.height / 2, dimension.length / 2);
-
-      this.scene.add(box);
-      this.scene.add(edge);
-      this.boundingBox = box;
-      this.boundingBoxEdges = edge;
-    },
-    redrawBoundingBox() {
-      this.disposeBoundingBox();
-      this.drawBoundingBox();
     },
     disposeBoundingBox() {
       this.boundingBox.geometry.dispose();

@@ -2,7 +2,7 @@
   <v-container class="cost-grid">
     <p class="header" :style="{ backgroundColor: programColor }">{{ program }}</p>
     <p class="label">{{ programSQF }} SF</p>
-    <v-slider v-model="programCost" :max="3000" :min="150" hide-details>
+    <v-slider v-model="programCost" :max="3000" :min="150" hide-details color="#002855">
       <template v-slot:append>
         <p class="label">${{ programCost }}</p>
       </template>

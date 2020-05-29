@@ -8,6 +8,7 @@
         :min="10"
         hide-details
         dense
+        color="#002855"
       >
         <template v-slot:append>
           <p>{{ occupancyCost }}</p>

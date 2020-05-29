@@ -2,16 +2,31 @@
   <v-app>
     <v-content>
       <div class="app-grid">
-        <div class="left-row">
-          <program-sliders :programs="programs" />
-          <cost-sliders :programs="programs" />
-          <model-viewer />
-        </div>
+        <v-tabs centered fixed-tabs color="#002855">
+          <v-tab>
+            Option A
+          </v-tab>
+          <v-tab>
+            Option B
+          </v-tab>
+          <v-tab-item class="tab-text">
+            <div class="left-row">
+              <program-sliders :programs="programs" />
+              <cost-sliders :programs="programs" />
+              <total-costs />
+            </div>
+          </v-tab-item>
+          <v-tab-item class="tab-text">
+            <div class="left-row">
+              <program-sliders :programs="programs" />
+              <cost-sliders :programs="programs" />
+              <total-costs />
+            </div>
+          </v-tab-item>
+        </v-tabs>
         <div class="right-row">
-          <total-costs />
+          <model-viewer />
           <cost-chart />
-          <div><br /><br /><br /></div>
-          <div><br /><br /><br /></div>
           <div><br /><br /><br /></div>
           <div><br /><br /><br /></div>
         </div>
@@ -78,13 +93,13 @@ export default {
 
 .left-row {
   display: grid;
-  gap: 1rem;
+  gap: 0rem;
   grid-template-columns: 1fr;
 }
 
 .right-row {
   display: grid;
-  gap: 1rem;
+  gap: 0rem;
   grid-template-columns: 1fr;
 }
 </style>
