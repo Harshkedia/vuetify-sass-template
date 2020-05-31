@@ -27,30 +27,30 @@ export default {
   name: "TotalCosts",
   components: {},
   props: {
-    programNames: {
-      type: Array,
+    option: {
+      type: Object,
       default: () => {
-        return [];
+        return {};
       }
     }
   },
   computed: {
     totalCost: {
       get() {
-        return store.getters.totalCost;
+        return this.option.totalCost;
       }
     },
     totalOccupancyCost: {
       get() {
-        return store.getters.totalOccupancyCost;
+        return this.option.totalOccupancyCost;
       }
     },
     occupancyCost: {
       set(val) {
-        store.commit("setOccupancyCost", val);
+        store.commit("setOccupancyCost", { optionName: this.option.name, val });
       },
       get() {
-        return store.getters.occupancyCost;
+        return this.option.occupancyCost;
       }
     }
   }

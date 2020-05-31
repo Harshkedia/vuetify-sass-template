@@ -18,6 +18,10 @@ import store from "../store";
 export default {
   name: "CostSlider",
   props: {
+    optionName: {
+      type: String,
+      default: "OptionA"
+    },
     program: {
       type: String,
       default: "Program Name"
@@ -37,27 +41,35 @@ export default {
     };
   },
   computed: {
+    option: {
+      get() {
+        if (this.optionName === "OptionA") {
+          return store.getters.optionA;
+        }
+        return store.getters.optionB;
+      }
+    },
     programSQF: {
       get() {
-        const result = store.getters.programs.filter(program => program.name === this.program);
+        const result = this.option.programs.filter(program => program.name === this.program);
         return result[0].sqft;
       },
       set(val) {
-        store.commit("setProgramGSF", { name: this.program, val });
+        store.commit("setProgramGSF", { optionName: this.optionName, name: this.program, val });
       }
     },
     programCost: {
       get() {
-        const result = store.getters.programs.filter(program => program.name === this.program);
+        const result = this.option.programs.filter(program => program.name === this.program);
         return result[0].cost;
       },
       set(val) {
-        store.commit("setProgramCost", { name: this.program, val });
+        store.commit("setProgramCost", { optionName: this.optionName, name: this.program, val });
       }
     },
     programTotalCost: {
       get() {
-        const result = store.getters.programs.filter(program => program.name === this.program);
+        const result = this.option.programs.filter(program => program.name === this.program);
         return result[0].totalCost;
       }
     }

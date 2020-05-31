@@ -14,6 +14,7 @@
         :key="program.name"
         :program="program.name"
         :program-color="program.color"
+        :option-name="option.name"
         class="cost-slider"
       />
     </v-card>
@@ -27,11 +28,16 @@ export default {
   name: "CostSliders",
   components: { CostSlider },
   props: {
-    programs: {
-      type: Array,
+    option: {
+      type: Object,
       default: () => {
-        return [];
+        return {};
       }
+    }
+  },
+  computed: {
+    programs() {
+      return this.option.programs;
     }
   }
 };

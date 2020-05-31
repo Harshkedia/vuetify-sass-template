@@ -58,7 +58,7 @@ export default {
     },
     programs: {
       get() {
-        return store.getters.programs;
+        return store.getters.optionA.programs;
       }
     },
     baseDim() {

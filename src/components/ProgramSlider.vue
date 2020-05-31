@@ -36,6 +36,10 @@ import store from "../store";
 export default {
   name: "ProgramSlider",
   props: {
+    optionName: {
+      type: String,
+      default: "Option A"
+    },
     program: {
       type: String,
       default: "Program Name"
@@ -49,22 +53,30 @@ export default {
     return {};
   },
   computed: {
+    option: {
+      get() {
+        if (this.optionName === "OptionA") {
+          return store.getters.optionA;
+        }
+        return store.getters.optionB;
+      }
+    },
     programUnits: {
       get() {
-        const result = store.getters.programs.filter(program => program.name === this.program);
+        const result = this.option.programs.filter(program => program.name === this.program);
         return result[0].units;
       },
       set(val) {
-        store.commit("setProgramUnits", { name: this.program, val });
+        store.commit("setProgramUnits", { optionName: this.optionName, name: this.program, val });
       }
     },
     programGSF: {
       get() {
-        const result = store.getters.programs.filter(program => program.name === this.program);
+        const result = this.option.programs.filter(program => program.name === this.program);
         return result[0].gsf;
       },
       set(val) {
-        store.commit("setProgramGSF", { name: this.program, val });
+        store.commit("setProgramGSF", { optionName: this.optionName, name: this.program, val });
       }
     }
   }

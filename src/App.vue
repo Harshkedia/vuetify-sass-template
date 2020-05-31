@@ -11,21 +11,21 @@
           </v-tab>
           <v-tab-item class="tab-text">
             <div class="left-row">
-              <program-sliders :programs="programs" />
-              <cost-sliders :programs="programs" />
-              <total-costs />
+              <program-sliders :option="optionA" />
+              <cost-sliders :option="optionA" />
+              <total-costs :option="optionA" />
             </div>
           </v-tab-item>
           <v-tab-item class="tab-text">
             <div class="left-row">
-              <program-sliders :programs="programs" />
-              <cost-sliders :programs="programs" />
-              <total-costs />
+              <program-sliders :option="optionB" />
+              <cost-sliders :option="optionB" />
+              <total-costs :option="optionB" />
             </div>
           </v-tab-item>
         </v-tabs>
         <div class="right-row">
-          <model-viewer />
+          <!-- <model-viewer /> -->
           <cost-chart />
           <div><br /><br /><br /></div>
           <div><br /><br /><br /></div>
@@ -42,7 +42,7 @@ import ProgramSliders from "./components/ProgramSliders.vue";
 import CostSliders from "./components/CostSliders.vue";
 import CostChart from "./components/CostChart.vue";
 import TotalCosts from "./components/TotalCosts.vue";
-import ModelViewer from "./components/ModelViewer.vue";
+// import ModelViewer from "./components/ModelViewer.vue";
 import Footer from "./components/Footer.vue";
 
 export default {
@@ -53,28 +53,21 @@ export default {
     CostSliders,
     CostChart,
     TotalCosts,
-    ModelViewer,
+    // ModelViewer,
     Footer
   },
 
   data: () => ({}),
 
   computed: {
-    programs: {
+    optionA: {
       get() {
-        return store.getters.programs;
+        return store.getters.optionA;
       }
     },
-    programNames: {
+    optionB: {
       get() {
-        return store.getters.programs.map(program => {
-          return program.name;
-        });
-      }
-    },
-    totalCost: {
-      get() {
-        return store.getters.totalCost;
+        return store.getters.optionB;
       }
     }
   }

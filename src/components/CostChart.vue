@@ -22,27 +22,15 @@ export default {
     };
   },
   computed: {
-    totalCost: {
+    optionA: {
       get() {
-        return store.getters.totalCost;
+        return store.getters.optionA;
       }
     },
-    totalOccupancyCost: {
+    optionB: {
       get() {
-        return store.getters.totalOccupancyCost;
+        return store.getters.optionB;
       }
-    },
-    lifeCycleCost() {
-      const arr = [];
-      for (let i = 1; i < 4; i += 1) {
-        arr.push(this.totalCost / i);
-      }
-      arr.reverse();
-      for (let i = 2; i < 14; i += 1) {
-        const prevVal = arr[i];
-        arr.push(prevVal + this.totalOccupancyCost);
-      }
-      return arr;
     },
     years() {
       const arr = [];
@@ -61,7 +49,14 @@ export default {
               label: "Option A",
               backgroundColor: "#002855",
               borderColor: "#002855",
-              data: this.lifeCycleCost,
+              data: this.lifeCycleCost(this.optionA.totalCost, this.optionA.totalOccupancyCost),
+              fill: false
+            },
+            {
+              label: "Option B",
+              backgroundColor: "#ff4611",
+              borderColor: "#ff4611",
+              data: this.lifeCycleCost(this.optionB.totalCost, this.optionB.totalOccupancyCost),
               fill: false
             }
           ]
@@ -104,14 +99,14 @@ export default {
     }
   },
   watch: {
-    totalCost() {
+    optionA() {
       this.chart.data.datasets.forEach(dataset => {
         // eslint-disable-next-line no-param-reassign
         dataset.data = this.lifeCycleCost;
       });
       this.chart.update();
     },
-    totalOccupancyCost() {
+    optionB() {
       this.chart.data.datasets.forEach(dataset => {
         // eslint-disable-next-line no-param-reassign
         dataset.data = this.lifeCycleCost;
@@ -127,6 +122,18 @@ export default {
       const ctx = this.$refs.chart.getContext("2d");
       this.chart = new Chart(ctx, this.config);
       window.myLine = this.chart;
+    },
+    lifeCycleCost(totalCost, totalOccupancyCost) {
+      const arr = [];
+      for (let i = 1; i < 4; i += 1) {
+        arr.push(totalCost / i);
+      }
+      arr.reverse();
+      for (let i = 2; i < 14; i += 1) {
+        const prevVal = arr[i];
+        arr.push(prevVal + totalOccupancyCost);
+      }
+      return arr;
     }
   }
 };
