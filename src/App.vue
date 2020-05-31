@@ -2,7 +2,7 @@
   <v-app>
     <v-content>
       <div class="app-grid">
-        <v-tabs centered fixed-tabs color="#002855">
+        <v-tabs v-model="activeTab" centered fixed-tabs color="#002855">
           <v-tab>
             Option A
           </v-tab>
@@ -25,7 +25,8 @@
           </v-tab-item>
         </v-tabs>
         <div class="right-row">
-          <!-- <model-viewer /> -->
+          <model-viewer v-if="optionAActive" :option="optionA" />
+          <model-viewer v-if="!optionAActive" :option="optionB" />
           <cost-chart />
           <div><br /><br /><br /></div>
           <div><br /><br /><br /></div>
@@ -42,7 +43,7 @@ import ProgramSliders from "./components/ProgramSliders.vue";
 import CostSliders from "./components/CostSliders.vue";
 import CostChart from "./components/CostChart.vue";
 import TotalCosts from "./components/TotalCosts.vue";
-// import ModelViewer from "./components/ModelViewer.vue";
+import ModelViewer from "./components/ModelViewer.vue";
 import Footer from "./components/Footer.vue";
 
 export default {
@@ -53,11 +54,13 @@ export default {
     CostSliders,
     CostChart,
     TotalCosts,
-    // ModelViewer,
+    ModelViewer,
     Footer
   },
 
-  data: () => ({}),
+  data: () => {
+    return { activeTab: 0 };
+  },
 
   computed: {
     optionA: {
@@ -68,6 +71,11 @@ export default {
     optionB: {
       get() {
         return store.getters.optionB;
+      }
+    },
+    optionAActive: {
+      get() {
+        return this.activeTab === 0;
       }
     }
   }

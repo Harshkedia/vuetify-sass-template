@@ -25,12 +25,17 @@
 <script>
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import store from "../store";
 
 export default {
   name: "ModelViewer",
   components: {},
   props: {
+    option: {
+      type: Object,
+      default: () => {
+        return {};
+      }
+    },
     programNames: {
       type: Array,
       default: () => {
@@ -58,7 +63,7 @@ export default {
     },
     programs: {
       get() {
-        return store.getters.optionA.programs;
+        return this.option.programs;
       }
     },
     baseDim() {

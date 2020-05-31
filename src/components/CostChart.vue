@@ -32,6 +32,16 @@ export default {
         return store.getters.optionB;
       }
     },
+    optionACosts: {
+      get() {
+        return [this.optionA.totalCost, this.optionA.totalOccupancyCost];
+      }
+    },
+    optionBCosts: {
+      get() {
+        return [this.optionB.totalCost, this.optionB.totalOccupancyCost];
+      }
+    },
     years() {
       const arr = [];
       for (let i = 0; i < 15; i += 1) {
@@ -99,17 +109,27 @@ export default {
     }
   },
   watch: {
-    optionA() {
+    optionACosts() {
       this.chart.data.datasets.forEach(dataset => {
-        // eslint-disable-next-line no-param-reassign
-        dataset.data = this.lifeCycleCost;
+        if (dataset.label === "Option A") {
+          // eslint-disable-next-line no-param-reassign
+          dataset.data = this.lifeCycleCost(
+            this.optionA.totalCost,
+            this.optionA.totalOccupancyCost
+          );
+        }
       });
       this.chart.update();
     },
-    optionB() {
+    optionBCosts() {
       this.chart.data.datasets.forEach(dataset => {
-        // eslint-disable-next-line no-param-reassign
-        dataset.data = this.lifeCycleCost;
+        if (dataset.label === "Option B") {
+          // eslint-disable-next-line no-param-reassign
+          dataset.data = this.lifeCycleCost(
+            this.optionB.totalCost,
+            this.optionB.totalOccupancyCost
+          );
+        }
       });
       this.chart.update();
     }

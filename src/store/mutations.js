@@ -82,9 +82,9 @@ export default {
   },
   setOccupancyCost(state, payload) {
     if (payload.optionName === "OptionA") {
-      state.optionA.occupancyCost = payload;
+      state.optionA.occupancyCost = payload.val;
     } else {
-      state.optionB.occupancyCost = payload;
+      state.optionB.occupancyCost = payload.val;
     }
     update(state);
   }
