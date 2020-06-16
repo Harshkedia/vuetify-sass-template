@@ -12,7 +12,9 @@
 <script>
 import { Chart } from "chart.js";
 import store from "../store";
-
+/**
+  A Charts.js line-chart showing scenario costs.
+ */
 export default {
   name: "CostChart",
   props: {},

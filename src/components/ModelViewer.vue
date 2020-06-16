@@ -26,6 +26,9 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
+/** A Three.js Model Viewer for
+Scenario Models */
+
 export default {
   name: "ModelViewer",
   components: {},
@@ -106,15 +109,6 @@ export default {
       requestAnimationFrame(this.animate);
       this.renderer.render(this.scene, this.camera);
       this.redrawProgramGeometry();
-    },
-    disposeBoundingBox() {
-      this.boundingBox.geometry.dispose();
-      this.boundingBox.material.dispose();
-      this.scene.remove(this.boundingBox);
-
-      this.boundingBoxEdges.geometry.dispose();
-      this.boundingBoxEdges.material.dispose();
-      this.scene.remove(this.boundingBoxEdges);
     },
     drawProgramGeometry() {
       const { boxDimensions, boxLocations } = this.programBoxGeometry();
