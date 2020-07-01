@@ -1,110 +1,34 @@
 <template>
   <v-app>
-    <v-content>
-      <div class="app-grid">
-        <v-card outlined>
-          <v-tabs v-model="activeTab" centered fixed-tabs color="#002855">
-            <v-tab>
-              Option A
-            </v-tab>
-            <v-tab>
-              Option B
-            </v-tab>
-            <v-tab-item class="tab-text">
-              <div class="left-row">
-                <program-sliders :option="optionA" />
-                <cost-sliders :option="optionA" />
-                <total-costs :option="optionA" />
-              </div>
-            </v-tab-item>
-            <v-tab-item class="tab-text">
-              <div class="left-row">
-                <program-sliders :option="optionB" />
-                <cost-sliders :option="optionB" />
-                <total-costs :option="optionB" />
-              </div>
-            </v-tab-item>
-          </v-tabs>
-        </v-card>
-        <v-card outlined>
-          <div class="right-row">
-            <model-viewer v-if="optionAActive" :option="optionA" />
-            <model-viewer v-if="!optionAActive" :option="optionB" />
-            <cost-chart />
-            <div><br /><br /><br /></div>
-            <div><br /><br /><br /></div>
-          </div>
-        </v-card>
+    <div id="app">
+      <div id="nav">
+        <router-link to="/">Home</router-link> |
+        <router-link to="/about">About</router-link>
       </div>
-      <Footer />
-    </v-content>
+      <router-view />
+    </div>
   </v-app>
 </template>
 
-<script>
-import store from "./store";
-import ProgramSliders from "./components/ProgramSliders.vue";
-import CostSliders from "./components/CostSliders.vue";
-import CostChart from "./components/CostChart.vue";
-import TotalCosts from "./components/TotalCosts.vue";
-import ModelViewer from "./components/ModelViewer.vue";
-import Footer from "./components/Footer.vue";
+<style lang="scss">
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+}
 
-export default {
-  name: "App",
+#nav {
+  padding: 30px;
 
-  components: {
-    ProgramSliders,
-    CostSliders,
-    CostChart,
-    TotalCosts,
-    ModelViewer,
-    Footer
-  },
+  a {
+    font-weight: bold;
+    color: #2c3e50;
 
-  data: () => {
-    return { activeTab: 0 };
-  },
-
-  computed: {
-    optionA: {
-      get() {
-        return store.getters.optionA;
-      }
-    },
-    optionB: {
-      get() {
-        return store.getters.optionB;
-      }
-    },
-    optionAActive: {
-      get() {
-        return this.activeTab === 0;
-      }
+    &.router-link-exact-active {
+      color: #42b983;
     }
   }
-};
-</script>
-
-<style scoped>
-#app {
-  margin: 30px;
-}
-.app-grid {
-  display: grid;
-  gap: 5rem;
-  grid-template-columns: 1fr 1fr;
-}
-
-.left-row {
-  display: grid;
-  gap: 0rem;
-  grid-template-columns: 1fr;
-}
-
-.right-row {
-  display: grid;
-  gap: 0rem;
-  grid-template-columns: 1fr;
 }
 </style>
